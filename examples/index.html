@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Omni-Desktop-Factory · Hello</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, #1b2a4a 0%, #0d1117 55%);
+      color: #e6edf3;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      width: min(640px, 92vw);
+      background: rgba(22, 27, 34, .82);
+      border: 1px solid #30363d;
+      border-radius: 14px;
+      padding: 36px 40px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.45);
+    }
+    h1 { font-size: 26px; letter-spacing: .4px; }
+    h1 .accent { color: #58a6ff; }
+    p.tagline { color: #8b949e; margin: 8px 0 22px; font-size: 14px; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+    button {
+      background: #238636; color: #fff; border: 1px solid #2ea043;
+      border-radius: 8px; padding: 9px 16px; font-size: 14px; cursor: pointer;
+    }
+    button:hover { background: #2ea043; }
+    button.ghost { background: transparent; border-color: #30363d; color: #c9d1d9; }
+    button.ghost:hover { border-color: #58a6ff; color: #58a6ff; }
+    pre#out {
+      background: #010409; border: 1px solid #21262d; border-radius: 8px;
+      padding: 14px; font-size: 12.5px; line-height: 1.55;
+      max-height: 260px; overflow: auto; white-space: pre-wrap; word-break: break-all;
+    }
+    .status { font-size: 13px; margin: 14px 0 0; }
+    .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+           background: #f0b429; margin-right: 7px; vertical-align: 1px; }
+    .dot.on { background: #3fb950; }
+    footer { margin-top: 22px; font-size: 12px; color: #6e7681; }
+    code { background: rgba(110,118,129,.18); padding: 2px 6px; border-radius: 5px; color: #79c0ff; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Omni-Desktop-Factory <span class="accent">// Hello</span></h1>
+    <p class="tagline">
+      这张网页已经被嵌入一个纯 Go 二进制。它通过 <code>window.omni.call(...)</code>
+      调用 Go 宿主能力 —— 无 Electron、无 Tauri、无 CGO。
+    </p>
+
+    <div class="row">
+      <button id="btn-info">system.getInfo</button>
+      <button id="btn-open" class="ghost">system.open (go.dev)</button>
+      <button id="btn-exit" class="ghost">app.exit</button>
+    </div>
+
+    <pre id="out">// bridge log will appear here</pre>
+
+    <p class="status"><span class="dot" id="dot"></span><span id="status">connecting to the Go host…</span></p>
+
+    <footer>
+      从源码到 .exe：<code>node examples/build.js</code> · 前端只需正常写 HTML/CSS/JS。
+    </footer>
+  </div>
+
+  <!-- The factory injects this line automatically; kept here for clarity. -->
+  <script src="/__omni.js"></script>
+  <script>
+    var out = document.getElementById('out');
+    var status = document.getElementById('status');
+    var dot = document.getElementById('dot');
+
+    function lines() {
+      var ts = new Date().toLocaleTimeString();
+      var parts = ['[' + ts + ']'].concat([].slice.call(arguments));
+      out.textContent += '\n' + parts.join(' ');
+      out.scrollTop = out.scrollHeight;
+    }
+
+    function call(method, params) {
+      return window.omni.call(method, params).then(
+        function (data) { lines('ok  ' + method + ' ->', JSON.stringify(data, null, 0)); return data; },
+        function (err) { lines('ERR ' + method + ' ->', err.message); }
+      );
+    }
+
+    omni.on('omni:connect', function () {
+      dot.classList.add('on');
+      status.textContent = 'bridge connected — RPC ready';
+      lines('bridge connected, window.omni v' + omni.version);
+    });
+    omni.on('omni:disconnect', function () {
+      dot.classList.remove('on');
+      status.textContent = 'bridge disconnected — reconnecting…';
+    });
+    omni.on('omni:ready', function (data) {
+      lines('host ready:', JSON.stringify(data));
+    });
+
+    document.getElementById('btn-info').onclick = function () { call('system.getInfo'); };
+    document.getElementById('btn-open').onclick = function () { call('system.open', { url: 'https://go.dev/dl/' }); };
+    document.getElementById('btn-exit').onclick = function () {
+      lines('asking the Go host to exit…');
+      call('app.exit');
+    };
+
+    // A first sanity call as soon as the page loads.
+    call('bridge.version');
+  </script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+# Keeps this directory present so the runtime templates compile standalone.
+# The real build replaces it with the user's --src content.

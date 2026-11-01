@@ -1,0 +1,37 @@
+{
+  "name": "omni-desktop-factory",
+  "version": "0.1.0",
+  "description": "Omni-Desktop-Factory: wrap the web in a Go shell — build standalone Windows desktop apps from HTML/CSS/JS with pure Node.js + Go 1.20. No Electron, no Tauri, no CGO.",
+  "bin": {
+    "omni-factory": "bin/omni-factory.js"
+  },
+  "main": "src/cli.js",
+  "scripts": {
+    "doctor": "node bin/omni-factory.js doctor",
+    "example": "node examples/build.js",
+    "smoke": "node test/smoke.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "runtime",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "desktop",
+    "webview",
+    "go",
+    "embed",
+    "exe",
+    "windows",
+    "no-cgo",
+    "electron-free"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "Omni-Desktop-Factory Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/omni-lab/omni-desktop-factory"
+}

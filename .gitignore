@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output (*.exe is generated, never committed)
+*.exe
+*.exe~
+build/
+dist/
+
+# omni-factory staging artefacts
+.omni-staging-*/
+
+# Go workspace leftovers from local template checks
+runtime/omniapp
+runtime/omniapp.exe
+runtime/*.test
+
+# Logs
+*.log
+omni-*.log
+
+# OS / editor noise
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
