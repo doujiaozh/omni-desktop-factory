@@ -43,3 +43,11 @@ desktop.ini
 *.out
 *.prof
 vendor/
+out/
+.next/
+coverage/
+*.tsbuildinfo
+.npm/
+.pnpm-store/
+yarn-error.log
+*.tgz
