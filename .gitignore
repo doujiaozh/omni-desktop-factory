@@ -29,3 +29,17 @@ $RECYCLE.BIN/
 *.swo
 .idea/
 .vscode/
+desktop.ini
+*.tmp
+*.bak
+.env
+.env.*
+!.env.example
+*.iml
+/bin/
+/build/
+/dist/
+*.test
+*.out
+*.prof
+vendor/
